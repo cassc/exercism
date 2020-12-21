@@ -8,7 +8,7 @@
   (Character/isUpperCase c))
 
 (defn yell? [s]
-  (some->> s (filter letter?) seq (every? upper?)))
+  (some->> s (filter letter?) (every? upper?)))
 
 (defn question? [s]
   (s/ends-with? s "?"))
