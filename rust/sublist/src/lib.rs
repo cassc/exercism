@@ -14,15 +14,24 @@ fn sublist_of<T: PartialEq>(first_list: &[T], second_list: &[T]) -> bool {
         return false;
     }
 
-    let mut skip = 0;
-    while skip + first_len <= second_len {
-        if second_list[skip..skip + first_len] == *first_list {
-            return true;
-        }
-        skip += 1;
+    if first_len == 0 {
+        return true;
     }
 
-    false
+    second_list
+        .windows(first_len)
+        .any(|slist| slist == first_list)
+
+    // use windows() to replace ...
+
+    // let mut skip = 0;
+    // while skip + first_len <= second_len {
+    //     if second_list[skip..skip + first_len] == *first_list {
+    //         return true;
+    //     }
+    //     skip += 1;
+    // }
+    // false
 }
 
 pub fn sublist<T: PartialEq>(first_list: &[T], second_list: &[T]) -> Comparison {
