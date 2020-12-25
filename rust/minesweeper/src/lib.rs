@@ -1,3 +1,5 @@
+use std::char;
+
 fn get_char(minefield: &[&str], x: i32, y: i32) -> Option<char> {
     if x < 0 || y < 0 {
         None
@@ -6,9 +8,9 @@ fn get_char(minefield: &[&str], x: i32, y: i32) -> Option<char> {
     }
 }
 
-fn mines_at(minefield: &[&str], x: i32, y: i32) -> String {
+fn mines_at(minefield: &[&str], x: i32, y: i32) -> char {
     if get_char(minefield, x, y) == Some('*') {
-        "*".into()
+        '*'
     } else {
         let mine = |a, b| match get_char(minefield, a, b) {
             Some('*') => 1,
@@ -29,11 +31,10 @@ fn mines_at(minefield: &[&str], x: i32, y: i32) -> String {
                     .sum::<i32>()
             })
             .sum();
-        println!("found {} mines", n);
         if n > 0 {
-            n.to_string()
+            char::from_digit(n as u32, 10).unwrap()
         } else {
-            " ".into()
+            ' '
         }
     }
 }
@@ -45,7 +46,6 @@ pub fn annotate(minefield: &[&str]) -> Vec<String> {
         .map(|y| {
             (0..width)
                 .map(|x| mines_at(minefield, x as i32, y as i32))
-                .fold(String::new(), |a, b| a + &b)
-        })
+                .collect::<String>()})
         .collect()
 }

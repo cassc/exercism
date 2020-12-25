@@ -1,17 +1,20 @@
 (ns armstrong-numbers)
 
+(defn- to-digits [num]
+  (->> [num 0]
+       (iterate (fn [[n r]] (when (pos? n) [(quot n 10) (rem n 10)])))
+       (rest)
+       (take-while identity)
+       (mapv second)))
+
 (defn- pow
-  ([base n]
-   (pow 1 base n))
-  ([result base n]
-   (if (pos? n)
-     (recur (*' result base) base (dec n))
-     result)))
+  [base n]
+  (apply *' 1 (repeat n base)))
 
 (defn armstrong? [num]
-  (let [digits (str num)
+  (let [digits (to-digits num)
         n      (count digits)]
     (->> digits
-         (map #(pow (Integer/parseInt (str %)) n))
-         (reduce +' 0)
+         (map #(pow % n))
+         (apply +')
          (= num))))
