@@ -9,12 +9,12 @@
 
 (defn- pow
   [base n]
-  (apply *' 1 (repeat n base)))
+  (apply * (repeat n base)))
 
 (defn armstrong? [num]
   (let [digits (to-digits num)
         n      (count digits)]
     (->> digits
          (map #(pow % n))
-         (apply +')
+         (apply +)
          (= num))))
