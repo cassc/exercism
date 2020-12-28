@@ -1,11 +1,10 @@
 (ns armstrong-numbers)
 
 (defn- to-digits [num]
-  (->> [num 0]
-       (iterate (fn [[n r]] (when (pos? n) [(quot n 10) (rem n 10)])))
-       (rest)
-       (take-while identity)
-       (mapv second)))
+  (->> num
+       (iterate (fn [n] (quot n 10)))
+       (take-while pos?)
+       (mapv (fn [n] (rem n 10)))))
 
 (defn- pow
   [base n]
