@@ -6,13 +6,8 @@
    \T \A
    \A \U})
 
-(def err (AssertionError. "Invalid input"))
-
-(defn- dna->rna [c]
-  (or (dna-rna-pairs c)
-      (throw err)))
-
 (defn to-rna [dna]
+  {:post [(= (count %) (count dna))]}
   (->> dna
-       (map dna->rna)
+       (map dna-rna-pairs)
        (apply str)))
