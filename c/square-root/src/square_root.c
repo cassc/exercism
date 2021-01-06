@@ -2,21 +2,11 @@
 
 
 unsigned int square_root(unsigned int s){
-  int result = s / 4;
-  while (!found(result, s)){
-    result = next_guess(result, s);
+  int result = s / 4 || 1;
+
+  while (result * result - s){
+    result = (result + s / result) / 2;
   }
+
   return result;
-}
-
-bool found(unsigned int result, unsigned int s) {
-  return !(result * result - s);
-}
-
-unsigned int next_guess(unsigned int result, unsigned int s){
-  if (result){
-      return (result + s / result) / 2;
-  } else{
-    return 1;
-  }
 }
