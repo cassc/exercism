@@ -1,25 +1,26 @@
 (ns run-length-encoding)
 
+(defn- shorten [[c & more]]
+  (str (when more (inc (count more))) c))
+
+(defn- expand [[_ n c]]
+  (let [n (if (seq n)
+            (Integer/valueOf n)
+            1)]
+    (repeat n c)))
+
 (defn run-length-encode
   "encodes a string with run-length-encoding"
   [plain-text]
   (->> plain-text
        (partition-by identity)
-       (map (fn [xs]
-              (let [n (count xs)
-                    c (first xs)]
-                (str (when (> n 1) n) c))))
-       (reduce str)))
+       (map shorten)
+       (apply str)))
 
 (defn run-length-decode
   "decodes a run-length-encoded string"
   [cipher-text]
   (->> cipher-text
-       (re-seq #"(\d*[\w|\s])")
-       (mapcat (fn [[match _]]
-                 (let [c (last match)
-                       n (if (> (count match) 1)
-                           (Integer/valueOf (subs match 0 (dec (count match))))
-                           1)]
-                   (repeat n c))))
-       (reduce str)))
+       (re-seq #"(\d*)([\w|\s])")
+       (mapcat expand)
+       (apply str)))
