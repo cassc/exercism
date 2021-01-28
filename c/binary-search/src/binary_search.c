@@ -2,9 +2,9 @@
 #include <stdio.h>
 
 int *binary_search(int value, int *arr, size_t length){
-  int left = 0;
-  int right = length - 1;
-  int mid = (right + left) / 2;
+  size_t left = 0;
+  size_t right = length - 1;
+  size_t mid = (right + left) / 2;
 
   while (left <= right) {
     mid = (right + left) / 2;
