@@ -47,11 +47,8 @@ impl PokerHand {
         let occurences = {
             let mut m = BTreeMap::new();
             cards.iter().for_each(|c| {
-                if let Some(v) = m.get_mut(&c.0) {
-                    *v += 1;
-                } else {
-                    m.insert(c.0, 1);
-                }
+                let counter = m.entry(c.0).or_insert(0);
+                *counter += 1;
             });
             let mut v = m.into_iter().collect::<Vec<_>>();
             v.sort_by(|x, y| match y.1.cmp(&x.1) {
