@@ -1,8 +1,7 @@
+use crossbeam::thread;
 use std::collections::HashMap;
-use std::sync::Arc;
-use std::thread;
 
-fn frequency_of_words(input: &[String]) -> HashMap<char, usize> {
+fn frequency_of_words(input: &[&str]) -> HashMap<char, usize> {
     let mut m = HashMap::new();
 
     input
@@ -25,31 +24,24 @@ fn merge_map(m1: &mut HashMap<char, usize>, m2: &HashMap<char, usize>) {
 
 pub fn frequency(input: &[&str], worker_count: usize) -> HashMap<char, usize> {
     let len = input.len();
-    let input: Vec<String> = input.iter().map(|s| String::from(*s)).collect();
     let size = len / worker_count;
 
     if size > 0 {
-        let data = Arc::new(input);
-        let mut results = Vec::with_capacity(worker_count);
-        let mut i = 0;
-        while i < len {
-            let mut end = i + size;
-            if end > len {
-                end = len;
-            }
-            let input = Arc::clone(&data);
-            results.push(thread::spawn(move || {
-                frequency_of_words(&input[i..end])
-            }));
-            i = end;
-        }
+        thread::scope(|s| {
+            let mut results = Vec::with_capacity(worker_count);
+            input.chunks(size).for_each(|chunk| {
+                results.push(s.spawn(move |_| frequency_of_words(chunk)));
+            });
 
-        let mut m = HashMap::new();
-        for r in results {
-            let mt = r.join().unwrap();
-            merge_map(&mut m, &mt);
-        }
-        m
+            let mut m = HashMap::new();
+
+            for r in results {
+                let mt = r.join().unwrap();
+                merge_map(&mut m, &mt);
+            }
+            m
+        })
+        .unwrap()
     } else {
         frequency_of_words(&input)
     }
